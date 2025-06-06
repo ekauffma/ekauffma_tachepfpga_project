@@ -10,6 +10,8 @@ void makeClusters(
     cluster_count_t &n_5x5Clusters,
     cluster_count_t &n_7x7Clusters
 ) {
+
+    // initialize cluster arrays and counters to 0
     for (int i = 0; i < max3x3Clusters; ++i) {
         clusters3x3[i].iEta = 0;
         clusters3x3[i].iPhi = 0;
@@ -34,4 +36,35 @@ void makeClusters(
     n_3x3Clusters = 0;
     n_5x5Clusters = 0;
     n_7x7Clusters = 0;
+
+    coord_t iEtaNeighbor;
+    coord_t iPhiNeighbor;
+
+    for (coord_t iEta = 0; iEta < iEtaBins; ++iEta) {
+        for (coord_t iPhi = 0; iPhi < iPhiBins; ++iPhi) {
+            fixed_t currentEnergy = caloGrid[iEta][iPhi];
+
+            // check upper neighbor
+            if (iEta>0) {
+                iEtaNeighbor = iEta-1;
+                if (caloGrid[iEtaNeighbor][iPhi] > currentEnergy) continue;
+            }
+            // check lower neighbor
+            if (iEta<iEtaBins-1) {
+                iEtaNeighbor = iEta+1;
+                if (caloGrid[iEtaNeighbor][iPhi] > currentEnergy) continue;
+            }
+            // check left neighbor
+            iPhiNeighbor = iPhi-1;
+            if (iPhiNeighbor < 0) iPhiNeighbor = iPhiBins-1;
+            if (caloGrid[iEta][iPhiNeighbor] > currentEnergy) continue;
+                
+            // check right neighbor
+            iPhiNeighbor = iPhi+1;
+            if (iPhiNeighbor>iPhiBins-1) iPhiNeighbor = 0;
+            if (caloGrid[iEta][iPhiNeighbor] > currentEnergy) continue;
+
+            std::cout << "Local Maximum found at (iEta=" << iEta << ", iPhi=" << iPhi << ") with energy=" << currentEnergy << std::endl;
+        }
+    }
 }
