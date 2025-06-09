@@ -11,6 +11,15 @@ void makeClusters(
     cluster_count_t &n_7x7Clusters
 ) {
 
+    std::cout << "caloGrid inside makeClusters function = " << std::endl;
+    for (int i = 0; i<5; ++i) {
+        std::cout << "    ";
+        for (int j = 46; j<51; ++j) {
+            std::cout << (float)caloGrid[i][j] << "  ";
+        }
+        std::cout << std::endl;
+    }
+
     // initialize cluster arrays and counters to 0
     for (int i = 0; i < max3x3Clusters; ++i) {
         clusters3x3[i].iEta = 0;
@@ -40,31 +49,36 @@ void makeClusters(
     coord_t iEtaNeighbor;
     coord_t iPhiNeighbor;
 
-    for (coord_t iEta = 0; iEta < iEtaBins; ++iEta) {
-        for (coord_t iPhi = 0; iPhi < iPhiBins; ++iPhi) {
+    for (int iEta = 0; iEta < iEtaBins; ++iEta) {
+        for (int iPhi = 0; iPhi < iPhiBins; ++iPhi) {
             fixed_t currentEnergy = caloGrid[iEta][iPhi];
+            bool isLocalMaximum = true;
+
+            if (currentEnergy<clusterThreshold) isLocalMaximum = false;
 
             // check upper neighbor
             if (iEta>0) {
                 iEtaNeighbor = iEta-1;
-                if (caloGrid[iEtaNeighbor][iPhi] > currentEnergy) continue;
+                if (caloGrid[iEtaNeighbor][iPhi] > currentEnergy) isLocalMaximum = false;
             }
             // check lower neighbor
             if (iEta<iEtaBins-1) {
                 iEtaNeighbor = iEta+1;
-                if (caloGrid[iEtaNeighbor][iPhi] > currentEnergy) continue;
+                if (caloGrid[iEtaNeighbor][iPhi] > currentEnergy) isLocalMaximum = false;
             }
             // check left neighbor
             iPhiNeighbor = iPhi-1;
             if (iPhiNeighbor < 0) iPhiNeighbor = iPhiBins-1;
-            if (caloGrid[iEta][iPhiNeighbor] > currentEnergy) continue;
+            if (caloGrid[iEta][iPhiNeighbor] > currentEnergy) isLocalMaximum = false;
                 
             // check right neighbor
             iPhiNeighbor = iPhi+1;
             if (iPhiNeighbor>iPhiBins-1) iPhiNeighbor = 0;
-            if (caloGrid[iEta][iPhiNeighbor] > currentEnergy) continue;
+            if (caloGrid[iEta][iPhiNeighbor] > currentEnergy) isLocalMaximum = false;
 
-            std::cout << "Local Maximum found at (iEta=" << iEta << ", iPhi=" << iPhi << ") with energy=" << currentEnergy << std::endl;
+            if (isLocalMaximum) {
+                std::cout << "Local Maximum found at (iEta=" << iEta << ", iPhi=" << iPhi << ") with energy=" << (float)currentEnergy << std::endl;
+            }
         }
     }
 }

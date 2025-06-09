@@ -14,6 +14,7 @@
 #define max3x3Clusters 6
 #define max5x5Clusters 6
 #define max7x7Clusters 6
+#define clusterThreshold 5
 
 typedef ap_fixed<16, 6> fixed_t;
 typedef ap_uint<6> coord_t;
