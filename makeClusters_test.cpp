@@ -106,5 +106,19 @@ int main() {
 
     makeClusters(caloGrid, cluster3x3_out, cluster5x5_out, cluster7x7_out, n_3x3found, n_5x5found, n_7x7found);
 
+    // print clusters
+    std::cout<<"3x3 Clusters: "<<std::endl;
+    for (int i = 0; i < n_3x3found; ++i) {
+        std::cout << "    Cluster " << i << ": iEta=" << cluster3x3_out[i].iEta << ", iPhi=" << cluster3x3_out[i].iPhi << ", Energy=" << cluster3x3_out[i].energy << std::endl;
+    }
+    std::cout<<"5x5 Clusters: "<<std::endl;
+    for (int i = 0; i < n_5x5found; ++i) {
+        std::cout << "    Cluster " << i << ": iEta=" << cluster5x5_out[i].iEta << ", iPhi=" << cluster5x5_out[i].iPhi << ", Energy=" << cluster5x5_out[i].energy << std::endl;
+    }
+    std::cout<<"7x7 Clusters: "<<std::endl;
+    for (int i = 0; i < n_7x7found; ++i) {
+        std::cout << "    Cluster " << i << ": iEta=" << cluster7x7_out[i].iEta << ", iPhi=" << cluster7x7_out[i].iPhi << ", Energy=" << cluster7x7_out[i].energy << std::endl;
+    }
+
     return 0;
 }

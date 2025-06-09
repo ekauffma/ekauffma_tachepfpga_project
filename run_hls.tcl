@@ -14,7 +14,7 @@ set_top makeClusters
 open_solution -reset solution1
 # Define technology and clock rate
 set_part  {xcvu9p-flga2104-1-i}
-create_clock -period 25 -name default 
+create_clock -period 25 -name default
 
 # Source x_hls.tcl to determine which steps to execute
 source x_hls.tcl
