@@ -11,6 +11,7 @@
 
 #define iEtaBins 34
 #define iPhiBins 72
+#define nGenClusters 5
 #define max3x3Clusters 6
 #define max5x5Clusters 6
 #define max7x7Clusters 6
@@ -18,6 +19,7 @@
 #define clusterStopThreshold 0.95 // ratio at which to stop expanding cluster (smaller threshold energy / larger threshold energy)
 
 typedef ap_fixed<16, 6> fixed_t;
+typedef ap_fixed<22, 12> sum_t;
 typedef ap_uint<6> coord_t;
 typedef ap_uint<3> cluster_size_t;
 typedef ap_uint<3> cluster_count_t;
@@ -26,7 +28,7 @@ struct Cluster {
     coord_t iEta;
     coord_t iPhi;
     cluster_size_t size;
-    fixed_t energy;
+    sum_t energy;
 };
 
 void makeClusters(

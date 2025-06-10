@@ -35,6 +35,7 @@ Local Maximum found at (iEta=33, iPhi=24) with energy=3.34277
 
 Without any pragmas, the latency is 61304 cycles and the resource estimation is as follows:
 
+```
 +---------------------+---------+------+---------+---------+-----+
 |         Name        | BRAM_18K|  DSP |    FF   |   LUT   | URAM|
 +---------------------+---------+------+---------+---------+-----+
@@ -56,5 +57,39 @@ Without any pragmas, the latency is 61304 cycles and the resource estimation is 
 +---------------------+---------+------+---------+---------+-----+
 |Utilization (%)      |        0|     0|       ~0|       ~0|    0|
 +---------------------+---------+------+---------+---------+-----+
+```
 
 So it is clear that the resource utilization is low while the latency is high, so we can afford to parallelize a bit.
+
+I used the `HLS INTERFACE` pragma to utilize BRAM for the arrays and partitioned the `iPhi` dimension of the calorimeter grid (cyclic with factor of 8). 
+I fully unrolled the loops that initialized all return values of the cluster arrays to 0. 
+I unrolled the `iPhi` loop (the inner loop) of the clustering with a factor of 4.  
+This brought the latency down to 31325 cycles (0.783 ms), around half of the original latency. 
+This is still much higher than 25ns though.
+The resource utilization increased as such:
+
+```
++---------------------+---------+------+---------+---------+-----+
+|         Name        | BRAM_18K|  DSP |    FF   |   LUT   | URAM|
++---------------------+---------+------+---------+---------+-----+
+|DSP                  |        -|     -|        -|        -|    -|
+|Expression           |        -|     -|        -|        -|    -|
+|FIFO                 |        -|     -|        -|        -|    -|
+|Instance             |        0|     -|    21216|    38895|    0|
+|Memory               |        -|     -|        -|        -|    -|
+|Multiplexer          |        -|     -|        -|      358|    -|
+|Register             |        -|     -|        6|        -|    -|
++---------------------+---------+------+---------+---------+-----+
+|Total                |        0|     0|    21222|    39253|    0|
++---------------------+---------+------+---------+---------+-----+
+|Available SLR        |     1440|  2280|   788160|   394080|  320|
++---------------------+---------+------+---------+---------+-----+
+|Utilization SLR (%)  |        0|     0|        2|        9|    0|
++---------------------+---------+------+---------+---------+-----+
+|Available            |     4320|  6840|  2364480|  1182240|  960|
++---------------------+---------+------+---------+---------+-----+
+|Utilization (%)      |        0|     0|       ~0|        3|    0|
++---------------------+---------+------+---------+---------+-----+
+```
+
+So the resource utilization went up quite a bit but it is still not bad.

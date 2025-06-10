@@ -37,11 +37,10 @@ void generateTestCaloGrid(fixed_t caloGrid[iEtaBins][iPhiBins]) {
     std::uniform_real_distribution<> prob_dist(0.0, 1.0);
     std::normal_distribution<> noise_dist(0.0, 1.0);
 
-    const int nClusters = 3;
-    SimCluster clusters[nClusters];
+    SimCluster clusters[nGenClusters];
 
     // Generate clusters
-    for (int i = 0; i < nClusters; ++i) {
+    for (int i = 0; i < nGenClusters; ++i) {
         double sigma = sigma_dist(gen);
         clusters[i] = {
             center_iEta_dist(gen),
@@ -56,7 +55,7 @@ void generateTestCaloGrid(fixed_t caloGrid[iEtaBins][iPhiBins]) {
     for (int iEta = 0; iEta < iEtaBins; ++iEta) {
         for (int iPhi = 0; iPhi < iPhiBins; ++iPhi) {
             double sum = 0.0;
-            for (int c = 0; c < nClusters; ++c) {
+            for (int c = 0; c < nGenClusters; ++c) {
                 sum += get2DGaussian(iEta, iPhi, clusters[c]);
             }
 

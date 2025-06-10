@@ -10,8 +10,22 @@ void makeClusters(
     cluster_count_t &n_5x5Clusters,
     cluster_count_t &n_7x7Clusters
 ) {
+
+#pragma HLS INTERFACE bram port=caloGrid
+#pragma HLS INTERFACE bram port=clusters3x3
+#pragma HLS INTERFACE bram port=clusters5x5
+#pragma HLS INTERFACE bram port=clusters7x7
+#pragma HLS INTERFACE ap_none port=n_3x3Clusters
+#pragma HLS INTERFACE ap_none port=n_5x5Clusters
+#pragma HLS INTERFACE ap_none port=n_7x7Clusters
+#pragma HLS INTERFACE s_axilite port=return
+
+#pragma HLS ARRAY_PARTITION variable=caloGrid cyclic factor=12 dim=2
+//#pragma HLS ARRAY_PARTITION variable=caloGrid complete dim=2
+
     // initialize cluster arrays and counters to 0
     for (int i = 0; i < max3x3Clusters; ++i) {
+#pragma HLS UNROLL
         clusters3x3[i].iEta = 0;
         clusters3x3[i].iPhi = 0;
         clusters3x3[i].size = 3;
@@ -19,6 +33,7 @@ void makeClusters(
     }
 
     for (int i = 0; i < max5x5Clusters; ++i) {
+#pragma HLS UNROLL
         clusters5x5[i].iEta = 0;
         clusters5x5[i].iPhi = 0;
         clusters5x5[i].size = 5;
@@ -26,6 +41,7 @@ void makeClusters(
     }
 
     for (int i = 0; i < max7x7Clusters; ++i) {
+#pragma HLS UNROLL
         clusters7x7[i].iEta = 0;
         clusters7x7[i].iPhi = 0;
         clusters7x7[i].size = 7;
@@ -38,6 +54,7 @@ void makeClusters(
 
     for (int iEta = 0; iEta < iEtaBins; ++iEta) {
         for (int iPhi = 0; iPhi < iPhiBins; ++iPhi) {
+#pragma HLS UNROLL factor=12
             fixed_t currentEnergy = caloGrid[iEta][iPhi];
             bool isLocalMaximum = true;
 
@@ -56,9 +73,9 @@ void makeClusters(
 
             // cluster if isLocalMaximum
             if (isLocalMaximum) {
-                fixed_t energy3x3 = 0.0;
-                fixed_t energy5x5 = 0.0;
-                fixed_t energy7x7 = 0.0;
+                sum_t energy3x3 = 0.0;
+                sum_t energy5x5 = 0.0;
+                sum_t energy7x7 = 0.0;
                 std::cout << "Local Maximum found at (iEta=" << iEta << ", iPhi=" << iPhi << ") with energy=" << (float)currentEnergy << std::endl;
 
                 // compute 3x3 energy
