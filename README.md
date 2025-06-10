@@ -25,4 +25,10 @@ The output for this example is:
 Local Maximum found at (iEta=4, iPhi=38) with energy=4.00977
 Local Maximum found at (iEta=23, iPhi=67) with energy=10.8193
 Local Maximum found at (iEta=33, iPhi=24) with energy=3.34277
+3x3 Clusters:
+    Cluster 0: iEta=4, iPhi=38, Energy=20.3281
+    Cluster 1: iEta=33, iPhi=24, Energy=9.8457
+5x5 Clusters:
+7x7 Clusters:
+    Cluster 0: iEta=23, iPhi=3, Energy=20.0459
 ```
